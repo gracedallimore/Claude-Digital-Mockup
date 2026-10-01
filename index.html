@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pantry Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e8f1ee;--card:#fff;--ink:#14302b;--mute:#5b736d;--acc:#f0d447;--line:#c9dbd6;--bad:#b3261e;--ok:#1f7a55;--warn:#c76b00;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1f1c;--card:#182b27;--ink:#e6f2ee;--mute:#8fa8a1;--line:#2b443e;--bad:#ff8a80;--ok:#6fd3a5;--warn:#ffb454}}
+:root[data-theme="dark"]{--bg:#0f1f1c;--card:#182b27;--ink:#e6f2ee;--mute:#8fa8a1;--line:#2b443e;--bad:#ff8a80;--ok:#6fd3a5;--warn:#ffb454}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Bricolage Grotesque",system-ui,sans-serif}
+.phone{max-width:480px;margin:0 auto;min-height:100vh;padding:20px 18px 110px}
+h1{font-size:2rem;font-weight:800;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:1.3rem;margin:0 0 4px}
+p.sub{color:var(--mute);margin:0 0 18px}
+label{display:block;font-weight:600;font-size:.9rem;margin:12px 0 4px}
+input{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+input:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.btn{display:block;width:100%;margin-top:18px;padding:13px;border:0;border-radius:12px;background:var(--ink);color:var(--bg);font:inherit;font-weight:700;cursor:pointer}
+.btn.acc{background:var(--acc);color:#14302b}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.link{background:none;border:0;color:var(--ink);font:inherit;text-decoration:underline;cursor:pointer;padding:6px 0}
+.err{color:var(--bad);font-size:.9rem;min-height:1.2em;margin-top:6px}
+.note{background:var(--card);border-left:5px solid var(--ok);padding:12px;border-radius:8px;margin-top:14px}
+.row{display:flex;gap:10px;align-items:center}
+.between{display:flex;justify-content:space-between;align-items:center}
+.hide{display:none!important}
+.banner{background:var(--acc);color:#14302b;border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:.92rem}
+.item{display:flex;gap:12px;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
+.item.sel{border-color:var(--ink)}
+.pic{font-size:1.8rem;width:48px;height:48px;border-radius:10px;background:var(--bg);display:grid;place-items:center;flex:none}
+.grow{flex:1;min-width:0}
+.name{font-weight:700}
+.meta{color:var(--mute);font-size:.85rem}
+.exp{font-weight:700;font-size:.85rem;text-align:right;white-space:nowrap}
+.exp.soon{color:var(--warn)}.exp.gone{color:var(--bad)}.exp.fine{color:var(--ok)}
+.bubble{width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);background:transparent;flex:none;cursor:pointer;padding:0}
+.sel .bubble{background:var(--ink)}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1.5px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));display:flex;align-items:flex-end;justify-content:center;gap:10px;max-width:480px;margin:0 auto}
+.tab{flex:1;border:0;background:none;color:var(--mute);font:inherit;font-size:.85rem;padding:8px 4px;border-radius:12px;cursor:pointer}
+.tab b{display:block;font-size:1.3rem}
+.tab.mid{flex:1.5;background:var(--ink);color:var(--bg);padding:14px 4px;margin-top:-18px;font-weight:800}
+.tab.on{color:var(--ink);font-weight:800;background:var(--acc)}
+.tab.mid.on{background:var(--ink);color:var(--acc)}
+.actionbar{position:fixed;left:0;right:0;bottom:84px;max-width:480px;margin:0 auto;display:flex;gap:10px;padding:0 18px}
+.actionbar .btn{margin:0}
+.fab{position:fixed;right:max(18px,calc(50% - 222px));bottom:92px;width:56px;height:56px;border-radius:50%;border:0;background:var(--acc);color:#14302b;font-size:2rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.sheet{background:var(--card);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px))}
+.pill{display:inline-block;background:var(--acc);color:#14302b;font-weight:800;font-size:.8rem;border-radius:99px;padding:3px 10px}
+.pill.sug{background:var(--ink);color:var(--bg)}
+details{background:var(--card);border:1.5px solid var(--line);border-radius:14px;margin-bottom:10px;padding:0 14px}
+summary{cursor:pointer;padding:14px 0;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px}
+summary::after{content:"+";font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"\2212"}
+details ul,details ol{margin:0 0 10px;padding-left:20px}
+.have{color:var(--ok)}.miss{color:var(--warn)}
+.g{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.g.done span.t{text-decoration:line-through;color:var(--mute)}
+.g input[type=checkbox]{width:22px;height:22px;flex:none}
+.g .t{flex:1}
+.mini{border:0;background:none;color:var(--mute);font:inherit;text-decoration:underline;cursor:pointer}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--bad);color:#fff;padding:10px 16px;border-radius:10px;z-index:20;max-width:90%}
+.toast.ok{background:var(--ok)}
+</style>
+</head>
+<body>
+<div class="phone" id="app"></div>
+<div id="toast"></div>
+<script>
+var S={screen:'create',tab:'inv',sel:null,user:null,
+inv:[{id:1,n:'Spinach',q:1,d:'Bagged, 5 oz',e:off(1),i:'🥬'},{id:2,n:'Eggs',q:6,d:'',e:off(6),i:'🥚'},{id:3,n:'Milk',q:1,d:'Half gallon',e:off(3),i:'🥛'},{id:4,n:'Rice',q:2,d:'',e:off(200),i:'🍚'},{id:5,n:'Tomatoes',q:4,d:'',e:off(9),i:'🍅'}],
+groc:[{id:1,n:'Bread',done:false},{id:2,n:'Butter',done:true}],
+saved:[0],nid:10,gopen:false};
+var R=[{n:'Spinach Egg Scramble',t:'10 min',ing:['Spinach','Eggs'],st:['Whisk eggs.','Wilt spinach in a pan.','Add eggs and stir until set.']},
+{n:'Tomato Rice Bowl',t:'25 min',ing:['Rice','Tomatoes','Onion'],st:['Cook rice.','Saute onion and tomatoes.','Serve over rice.']},
+{n:'French Toast',t:'15 min',ing:['Bread','Eggs','Milk'],st:['Whisk eggs and milk.','Dip bread.','Fry until golden.']},
+{n:'Creamy Rice Pudding',t:'35 min',ing:['Rice','Milk','Sugar'],st:['Simmer rice in milk.','Stir in sugar.','Cool and serve.']}];
+function off(n){var d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function today(){return off(0)}
+function days(e){return Math.round((new Date(e+'T00:00')-new Date(today()+'T00:00'))/864e5)}
+function until(e){var n=days(e);if(n<0)return'Expired';if(n==0)return'Today';if(n==1)return'1 day';if(n<14)return n+' days';if(n<60)return Math.round(n/7)+' weeks';return Math.round(n/30)+' months'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function v(id){return document.getElementById(id).value.trim()}
+function toast(m,ok){var t=document.getElementById('toast');t.innerHTML='<div class="toast '+(ok?'ok':'')+'" role="alert">'+esc(m)+'</div>';setTimeout(function(){t.innerHTML=''},2600)}
+function go(s,t){S.screen=s;if(t)S.tab=t;S.sel=null;render()}
+function icon(n){var m={spinach:'🥬',egg:'🥚',milk:'🥛',rice:'🍚',tomato:'🍅',bread:'🍞',butter:'🧈',apple:'🍎'};n=n.toLowerCase();for(var k in m)if(n.indexOf(k)>-1)return m[k];return'🍽️'}
+ 
+function render(){
+ var a=document.getElementById('app'),h='';
+ if(S.screen=='create')h=createH();
+ else if(S.screen=='login')h=loginH();
+ else if(S.screen=='forgot')h=forgotH();
+ else{h=S.tab=='inv'?invH():S.tab=='saved'?savedH():S.tab=='sug'?sugH():grocH();h+=tabsH()}
+ a.innerHTML=h;
+}
+function createH(){return '<h1>Create your account</h1><p class="sub">Set up Pantry so nothing in your fridge goes to waste.</p>'+
+[['First name','fn'],['Last name','ln'],['Email address','em','email'],['Phone number','ph','tel'],['Birth date','bd','date'],['University (optional)','un'],['Address','ad'],['Username','us'],['Password','pw','password']].map(function(f){return '<label for="'+f[1]+'">'+f[0]+'</label><input id="'+f[1]+'" type="'+(f[2]||'text')+'">'}).join('')+
+'<p class="meta">Password: 12+ characters, one capital letter, one special character.</p><div class="err" id="e" role="alert"></div>'+
+'<button class="btn acc" onclick="doCreate()">Create account</button><div style="text-align:right;margin-top:14px"><button class="link" onclick="go(\'login\')">Log in</button></div>'}
+function doCreate(){
+ var f=[['fn','first name'],['ln','last name'],['em','email address'],['ph','phone number'],['bd','birth date'],['ad','address'],['us','username'],['pw','password']];
+ for(var i=0;i<f.length;i++)if(!v(f[i][0]))return err('Please enter your '+f[i][1]+'.');
+ if(!/^\S+@\S+\.\S+$/.test(v('em')))return err('Please enter a valid email address.');
+ var p=v('pw');if(p.length<12||!/[A-Z]/.test(p)||!/[^A-Za-z0-9]/.test(p))return err('Password needs 12+ characters, a capital letter and a special character.');
+ S.user=v('us');S.email=v('em');S.pass=p;go('app','inv')}
+function err(m){document.getElementById('e').textContent=m}
+function loginH(){return '<h1>Welcome back</h1><p class="sub">Log in to see what is in your kitchen.</p><label for="lu">Username or email</label><input id="lu"><label for="lp">Password</label><input id="lp" type="password"><div class="err" id="e" role="alert"></div><button class="btn acc" onclick="doLogin()">Log in</button>'+
+'<div class="between" style="margin-top:14px"><button class="link" onclick="go(\'forgot\')">Forgot password or username?</button><button class="link" onclick="go(\'create\')">Create account</button></div><p class="meta">Prototype tip: create an account first, or log in with demo / Demo-Pass-1234!</p>'}
+function doLogin(){var u=v('lu'),p=v('lp'),ok=(u=='demo'&&p=='Demo-Pass-1234!')||(S.user&&(u==S.user||u==S.email)&&p==S.pass);
+ if(!u||!p)return err('Please enter your username and password.');
+ if(!ok)return err('Username or password is incorrect. Try again.');S.user=S.user||'demo';go('app','inv')}
+function forgotH(){return '<h1>Reset password</h1><p class="sub">Enter the email linked to your account.</p><label for="fe">Email address</label><input id="fe" type="email"><div class="err" id="e" role="alert"></div><div id="ok"></div><button class="btn acc" onclick="doForgot()">Send recovery link</button><button class="link" style="margin-top:14px" onclick="go(\'login\')">Back to log in</button>'}
+function doForgot(){if(!/^\S+@\S+\.\S+$/.test(v('fe')))return err('Please enter a valid email address.');err('');document.getElementById('ok').innerHTML='<div class="note">Check your email for a password recovery link.</div>'}
+ 
+function invH(){
+ var soon=S.inv.filter(function(x){var d=days(x.e);return d==7||d==3||d==1});
+ var h='<h1>Food inventory</h1><p class="sub">Soonest to expire first.</p>';
+ soon.forEach(function(x){h+='<div class="banner" role="status">🔔 '+esc(x.n)+' expires in '+days(x.e)+' day'+(days(x.e)>1?'s':'')+'.</div>'});
+ var l=S.inv.slice().sort(function(a,b){return a.e<b.e?-1:1});
+ if(!l.length)h+='<div class="note">Your inventory is empty. Tap + to add your first item.</div>';
+ l.forEach(function(x){var d=days(x.e),c=d<0?'gone':d<=3?'soon':'fine';
+ h+='<div class="item '+(S.sel==x.id?'sel':'')+'"><div class="pic">'+x.i+'</div><div class="grow"><div class="name">'+esc(x.n)+' <span class="meta">x'+x.q+'</span></div><div class="meta">'+(esc(x.d)||'No details')+' &middot; '+x.e+'</div></div><div class="exp '+c+'">'+until(x.e)+'</div><button class="bubble" aria-label="Select '+esc(x.n)+'" onclick="pick('+x.id+')"></button></div>'});
+ h+='<button class="fab" aria-label="Add item" onclick="openForm()">+</button>';
+ if(S.sel)h+='<div class="actionbar"><button class="btn acc" onclick="openForm('+S.sel+')">Edit</button><button class="btn ghost" style="background:var(--card)" onclick="delItem('+S.sel+')">Delete</button></div>';
+ return h}
+function pick(id){S.sel=S.sel==id?null:id;render()}
+function delItem(id){if(confirm('Delete this item?')){S.inv=S.inv.filter(function(x){return x.id!=id});S.sel=null;render()}}
+function openForm(id){var x=S.inv.filter(function(i){return i.id==id})[0]||{n:'',q:'',e:'',d:''};
+ var m=document.createElement('div');m.className='modal';m.id='modal';
+ m.innerHTML='<div class="sheet"><h2>'+(id?'Edit item':'Add item')+'</h2><label for="in">Name</label><input id="in" value="'+esc(x.n)+'"><label for="iq">Quantity</label><input id="iq" type="number" value="'+x.q+'"><label for="ie">Expiration date</label><input id="ie" type="date" value="'+x.e+'"><label for="id">Details (optional)</label><input id="id" value="'+esc(x.d)+'"><div class="err" id="e" role="alert"></div><div class="row"><button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn acc" onclick="saveItem('+(id||0)+')">Save</button></div></div>';
+ document.body.appendChild(m)}
+function closeM(){var m=document.getElementById('modal');if(m)m.remove()}
+function saveItem(id){var n=v('in'),q=v('iq'),e=v('ie');
+ if(!n)return err('Please enter a name.');if(!q)return err('Please enter a quantity.');
+ if(+q<1)return err('Please enter a quantity greater than 0.');if(!e)return err('Please enter an expiration date.');
+ if(e<today())return err('Please enter a date on or after today.');
+ if(id){var x=S.inv.filter(function(i){return i.id==id})[0];x.n=n;x.q=+q;x.e=e;x.d=v('id');x.i=icon(n)}
+ else S.inv.push({id:S.nid++,n:n,q:+q,e:e,d:v('id'),i:icon(n)});
+ closeM();S.sel=null;render()}
+ 
+function has(n){return S.inv.some(function(x){return x.n.toLowerCase()==n.toLowerCase()})}
+function savedH(){
+ var l=S.saved;
+ var h='<div class="between"><h1>Saved recipes</h1><span class="pill">Saved</span></div><p class="sub">Tap a recipe to see what you need.</p>';
+ l.forEach(function(i){var r=R[i];h+='<details><summary><span>'+r.n+' <span class="meta">'+r.t+'</span></span></summary><b>Ingredients</b><ul>'+r.ing.map(function(g){return '<li class="'+(has(g)?'have':'miss')+'">'+g+(has(g)?' (in inventory)':' (need to buy)')+'</li>'}).join('')+'</ul><b>Steps</b><ol>'+r.st.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol><button class="mini" onclick="unsave('+i+')">Remove from saved</button></details>'});
+ return h+'<button class="btn acc" onclick="go(\'app\',\'sug\')">See suggested recipes</button>'}
+function unsave(i){S.saved=S.saved.filter(function(x){return x!=i});render()}
+function sugH(){
+ var h='<div class="between"><h1>Suggested recipes</h1><span class="pill sug">Suggested</span></div><p class="sub">Ideas based on what is in your inventory.</p>';
+ if(!S.inv.length)return h+'<div class="note" style="border-color:var(--bad)">Add food items to see recipe ideas.</div><button class="btn acc" onclick="go(\'app\',\'inv\')">Go to inventory</button>';
+ R.map(function(r,i){return{r:r,i:i,m:r.ing.filter(function(g){return !has(g)}),h:r.ing.filter(has).length}}).filter(function(o){return o.h>0}).sort(function(a,b){return a.m.length-b.m.length}).forEach(function(o){
+ h+='<details><summary><span>'+o.r.n+' <span class="meta">'+o.r.t+'</span></span></summary><p class="meta">'+(o.m.length?'Missing: '+o.m.join(', '):'You have everything.')+'</p><ol>'+o.r.st.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol><div class="row">'+(S.saved.indexOf(o.i)<0?'<button class="mini" onclick="save('+o.i+')">Save recipe</button>':'<span class="meta">Saved</span>')+(o.m.length?'<button class="mini" onclick="addMissing('+o.i+')">Add missing to grocery list</button>':'')+'</div></details>'});
+ return h}
+function save(i){S.saved.push(i);toast('Recipe saved.',1);render()}
+function addMissing(i){R[i].ing.filter(function(g){return !has(g)}).forEach(function(g){addG(g,1)});toast('Added to your grocery list.',1)}
+function addG(n,q){if(!S.groc.some(function(x){return x.n.toLowerCase()==n.toLowerCase()}))S.groc.push({id:S.nid++,n:n,done:false})}
+ 
+function grocH(){
+ var h='<h1>Grocery list</h1><p class="sub">Check items off as you shop.</p><div class="row"><input id="gi" placeholder="Add an item" aria-label="Add an item"><button class="btn acc" style="width:auto;margin:0;padding:12px 18px" onclick="gAdd()">Add</button></div>';
+ h+='<button class="btn ghost" style="margin-top:12px" onclick="S.gopen=!S.gopen;render()">'+(S.gopen?'Hide':'See')+' suggested items</button>';
+ if(S.gopen){var s=S.inv.filter(function(x){return x.q<=1||days(x.e)<=3});h+='<div class="note">'+(s.length?s.map(function(x){return '<div class="between"><span>'+esc(x.n)+' <span class="meta">'+(x.q<=1?'running low':'expiring soon')+'</span></span><button class="mini" onclick="gSug(\''+esc(x.n)+'\')">Add</button></div>'}).join(''):'Nothing to suggest right now.')+'</div>'}
+ if(!S.groc.length)h+='<div class="note">Your list is empty. Add your first item above.</div>';
+ S.groc.forEach(function(g){h+='<div class="g '+(g.done?'done':'')+'"><input type="checkbox" '+(g.done?'checked':'')+' onchange="gTog('+g.id+')" aria-label="Bought '+esc(g.n)+'"><span class="t">&bull; '+esc(g.n)+'</span><button class="mini" onclick="gEdit('+g.id+')">Edit</button><button class="mini" onclick="gDel('+g.id+')">Delete</button></div>'});
+ return h+'<button class="btn" onclick="go(\'app\',\'inv\')">Back to inventory</button>'}
+function gAdd(){var n=v('gi');if(!n)return toast('Please enter an item.');addG(n);render()}
+function gSug(n){addG(n);render()}
+function gTog(id){S.groc.forEach(function(g){if(g.id==id)g.done=!g.done});render()}
+function gDel(id){S.groc=S.groc.filter(function(g){return g.id!=id});render()}
+function gEdit(id){S.groc.forEach(function(g){if(g.id==id){var n=prompt('Edit item',g.n);if(n&&n.trim())g.n=n.trim()}});render()}
+ 
+function tabsH(){var t=S.tab;
+ return '<nav class="tabs"><button class="tab '+(t=='saved'||t=='sug'?'on':'')+'" onclick="go(\'app\',S.saved.length?\'saved\':\'sug\')"><b>📖</b>Recipes</button><button class="tab mid '+(t=='inv'?'on':'')+'" onclick="go(\'app\',\'inv\')"><b>🧊</b>Food inventory</button><button class="tab '+(t=='groc'?'on':'')+'" onclick="go(\'app\',\'groc\')"><b>🛒</b>Grocery list</button></nav>'}
+render();
+</script>
+</body>
+</html>
