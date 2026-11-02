@@ -66,6 +66,153 @@ details ul,details ol{margin:0 0 10px;padding-left:20px}
 .mini{border:0;background:none;color:var(--mute);font:inherit;text-decoration:underline;cursor:pointer}
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--bad);color:#fff;padding:10px 16px;border-radius:10px;z-index:20;max-width:90%}
 .toast.ok{background:var(--ok)}
+
+/* ==========================================
+   DESKTOP RESPONSIVE DESIGN
+   ========================================== */
+
+@media (min-width: 768px) {
+
+    /* Expand the main application */
+    .phone {
+        max-width: 1200px;
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 100px 40px 60px;
+    }
+
+    /* Make headings more prominent */
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    /* Give inventory items more room */
+    .item {
+        padding: 16px;
+        gap: 16px;
+        border-radius: 14px;
+    }
+
+    .pic {
+        width: 56px;
+        height: 56px;
+        font-size: 2rem;
+    }
+
+    .name {
+        font-size: 1.05rem;
+    }
+
+    .meta {
+        font-size: 0.95rem;
+    }
+
+    /* Move navigation to the top of the page */
+    .tabs {
+        top: 0;
+        bottom: auto;
+        left: 0;
+        right: 0;
+
+        width: 100%;
+        max-width: none;
+        margin: 0;
+
+        padding: 12px 40px;
+
+        justify-content: flex-end;
+        align-items: center;
+        gap: 16px;
+
+        background: var(--card);
+        border-top: none;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .tab {
+        flex: 0 0 auto;
+        min-width: 130px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+    }
+
+    .tab b {
+        display: inline;
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+
+    /* Remove the raised center-tab effect on desktop */
+    .tab.mid {
+        flex: 0 0 auto;
+        margin-top: 0;
+        padding: 12px 18px;
+        border-radius: 12px;
+    }
+
+    /* Position the floating add button */
+    .fab {
+        right: max(32px, calc((100vw - 1200px) / 2 + 32px));
+        bottom: 32px;
+        width: 64px;
+        height: 64px;
+    }
+
+    /* Expand the action bar when an item is selected */
+    .actionbar {
+        max-width: 600px;
+        bottom: 32px;
+        padding: 0 24px;
+    }
+
+    /* Make the add/edit modal wider */
+    .sheet {
+        max-width: 600px;
+        padding: 28px;
+        border-radius: 20px;
+    }
+
+    /* Keep the login and account forms readable */
+    #app > h1,
+    #app > .sub {
+        max-width: 850px;
+    }
+
+    #app > label,
+    #app > input,
+    #app > .btn,
+    #app > .err,
+    #app > .note {
+        max-width: 850px;
+    }
+}
+
+/* Additional adjustments for smaller phones */
+@media (max-width: 480px) {
+
+    .phone {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .item {
+        gap: 8px;
+        padding: 9px;
+    }
+
+    .exp {
+        font-size: 0.75rem;
+    }
+
+    .meta {
+        font-size: 0.8rem;
+    }
+}
+ 
 </style>
 </head>
 <body>
